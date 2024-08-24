@@ -1,5 +1,5 @@
 
-# BDScript Discord Commands
+# BDScript Discord for Commands
 
 Bem-vindo ao meu repositório de comandos em BDScript para botões do Discord! Aqui, você encontrará uma coleção de comandos personalizados, todos criados por mim, **Kaka**. Se você está procurando por soluções simples e eficientes para melhorar a interação em seus servidores do Discord, você veio ao lugar certo.
 
