@@ -1,0 +1,20 @@
+// Adicione o comando de gatilho como $onJoined[ID DO CANAL]
+
+$nomention
+$title[👋・Recepção: Bem-Vindo]
+$color[FFA07A]
+$thumbnail[$authorAvatar]
+$description[Bem-vindo, <@$authorID>! Aqui você poderá ver atualizações, avisos, enquetes sobre o **Servidor** e muito mais!
+
+**📢 » Avisos:**
+🔗: https://discord.com/channels/ID DO CANAL/ID DO CANAL
+
+**📝 » Regras:**
+🔗: https://discord.com/channels/ID DO CANAL/ID DO CANAL
+
+**👑 » Diga Oi:**
+🔗: https://discord.com/channels/ID DO CANAL/ID DO CANAL
+]
+
+$footer[ √.©Todos os direitos reservados]
+$image[https://cdn.discordapp.com/attachments/1262050932875857952/1274697317013786624/4C2C.gif?ex=66c331e3&is=66c1e063&hm=08121f3a9510adc3dac9e5b4f4908c86fd2534a8509382b7ce327f865fa077fb&]
