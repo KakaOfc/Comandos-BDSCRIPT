@@ -5,7 +5,7 @@ Bem-vindo ao meu repositório de comandos em BDScript para botões do Discord! A
 
 ## Sobre Mim
 
-👋 Olá! Meu nome é **Kaka**. Sou apaixonado por desenvolvimento de bots e automatizações para o Discord, e crio scripts em BDScript para tornar as interações nos servidores mais dinâmicas e personalizadas. Cada comando neste repositório foi cuidadosamente desenvolvido e testado por mim para garantir o melhor desempenho possível.
+👋 Olá! Meu nome é **Kaka**. Gosto muito da área de desenvolvimento de bots e automatizações para o Discord, e crio scripts em BDScript para tornar as interações nos servidores mais dinâmicas e personalizadas. Cada comando neste repositório foi cuidadosamente desenvolvido e testado por mim para garantir o melhor desempenho possível.
 
 ## O Que Você Vai Encontrar Aqui
 
