@@ -24,4 +24,4 @@ Neste repositório, você encontrará:
 
 ## Contato
 
-Se você tiver dúvidas, sugestões ou precisar de suporte, sinta-se à vontade para me contatar no Discord: **kakaofc**.
+Se você tiver dúvidas, sugestões ou precisar de suporte, sinta-se à vontade para me contatar no Discord: **ykakaofc**.
