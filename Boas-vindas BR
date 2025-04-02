@@ -1,20 +1,922 @@
-// Adicione o comando de gatilho como $onJoined[ID DO CANAL]
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minhas Finanças Pessoais</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --paid-color: #2ecc71;
+            --pending-color: #e74c3c;
+            --overdue-color: #34495e;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: var(--dark-color);
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        .login-container {
+            width: 90%;
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .login-container h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .login-form input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .login-form button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .login-form button:hover {
+            background-color: #2980b9;
+        }
+        
+        .error-message {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 15px auto;
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-top: 4px solid var(--secondary-color);
+        }
+        
+        .card h2 {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-top: 0;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .total {
+            font-weight: bold;
+            color: var(--success-color);
+        }
+        
+        .status-paid {
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+        
+        .status-pending {
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .status-overdue {
+            background-color: rgba(52, 73, 94, 0.1);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .paid {
+            background-color: var(--paid-color);
+        }
+        
+        .pending {
+            background-color: var(--pending-color);
+        }
+        
+        .overdue {
+            background-color: var(--overdue-color);
+        }
+        
+        .add-expense-form {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-row {
+            margin-bottom: 15px;
+        }
+        
+        .form-row label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .form-row input, .form-row select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .add-btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        .add-btn:hover {
+            background-color: #219955;
+        }
+        
+        .user-info {
+            background-color: var(--light-color);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 15px;
+            gap: 8px;
+        }
+        
+        .logout-btn, .change-password-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+        
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .change-password-btn {
+            background-color: var(--warning-color);
+        }
+        
+        .change-password-btn:hover {
+            background-color: #d35400;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            overflow: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 20% auto;
+            padding: 15px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-content h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+        
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+            gap: 8px;
+        }
+        
+        .modal-buttons button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .modal-buttons .confirm {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .modal-buttons .cancel {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .status-legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+        
+        .delete-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 3px 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .remaining-budget {
+            background-color: #e8f4fd;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .remaining-budget h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        
+        .budget-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .budget-input input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .budget-input button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0 15px;
+            cursor: pointer;
+        }
+        
+        .budget-summary {
+            margin-top: 10px;
+        }
+        
+        .budget-summary p {
+            margin: 5px 0;
+        }
+        
+        .positive {
+            color: var(--success-color);
+        }
+        
+        .negative {
+            color: var(--accent-color);
+        }
+        
+        @media (min-width: 768px) {
+            .login-container {
+                margin: 100px auto;
+                padding: 30px;
+            }
+            
+            .container {
+                margin: 30px auto;
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .dashboard {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .card {
+                min-width: 30%;
+                margin: 0 5px;
+            }
+            
+            .user-info {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                justify-content: flex-end;
+                margin-bottom: 0;
+            }
+            
+            .form-row {
+                display: flex;
+                align-items: center;
+            }
+            
+            .form-row label {
+                width: 120px;
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
+            
+            .form-row input, .form-row select {
+                flex: 1;
+            }
+            
+            .add-btn {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="loginContainer">
+        <h1>Acesso ao Sistema</h1>
+        <p class="error-message" id="errorMessage">E-mail ou senha incorretos</p>
+        <form class="login-form" id="loginForm">
+            <input type="email" id="email" placeholder="E-mail" required>
+            <input type="password" id="password" placeholder="Senha" required>
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+    
+    <div class="container" id="appContainer">
+        <div class="user-info" id="userInfo">
+            <span id="userEmail"></span>
+            <button class="change-password-btn" onclick="openChangePasswordModal()">Alterar Senha</button>
+            <button class="logout-btn" onclick="logout()">Sair</button>
+        </div>
+        
+        <h1>Minhas Finanças Pessoais</h1>
+        
+        <div class="status-legend">
+            <div class="legend-item">
+                <div class="status-indicator paid"></div>
+                <span>Pago</span>
+            </div>
+            <div class="legend-item">
+                <div class="status-indicator pending"></div>
+                <span>Pendente</span>
+            </div>
+            <div class="legend-item">
+                <div class="status-indicator overdue"></div>
+                <span>Atrasado</span>
+            </div>
+        </div>
+        
+        <div class="dashboard">
+            <div class="card">
+                <h2>Despesas Fixas</h2>
+                <p id="fixedExpenses">R$ 0,00</p>
+            </div>
+            <div class="card">
+                <h2>Despesas Variáveis</h2>
+                <p id="variableExpenses">R$ 0,00</p>
+            </div>
+            <div class="card">
+                <h2>Total Mensal</h2>
+                <p class="total" id="totalExpenses">R$ 0,00</p>
+            </div>
+        </div>
+        
+        <div class="remaining-budget">
+            <h3>Valores a Gastar</h3>
+            <div class="budget-input">
+                <input type="number" id="monthlyBudget" placeholder="Orçamento mensal" step="0.01" min="0">
+                <button onclick="setBudget()">Definir</button>
+            </div>
+            <div class="budget-summary">
+                <p>Orçamento: <span id="budgetAmount">R$ 0,00</span></p>
+                <p>Gasto total: <span id="spentAmount">R$ 0,00</span></p>
+                <p>Restante: <span id="remainingAmount" class="positive">R$ 0,00</span></p>
+            </div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Categoria</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="expensesTableBody">
+                <!-- Dados serão carregados dinamicamente -->
+            </tbody>
+        </table>
+        
+        <div class="add-expense-form">
+            <h2>Adicionar Nova Despesa</h2>
+            <div class="form-row">
+                <label for="expenseDate">Data:</label>
+                <input type="date" id="expenseDate" required>
+            </div>
+            <div class="form-row">
+                <label for="expenseDescription">Descrição:</label>
+                <input type="text" id="expenseDescription" placeholder="Descrição da despesa" required>
+            </div>
+            <div class="form-row">
+                <label for="expenseValue">Valor:</label>
+                <input type="number" id="expenseValue" placeholder="0,00" step="0.01" min="0" required>
+            </div>
+            <div class="form-row">
+                <label for="expenseCategory">Categoria:</label>
+                <select id="expenseCategory" required>
+                    <option value="Despesas fixas">Despesas fixas</option>
+                    <option value="Despesas variáveis">Despesas variáveis</option>
+                    <option value="Moradia">Moradia</option>
+                    <option value="Alimentação">Alimentação</option>
+                    <option value="Transporte">Transporte</option>
+                    <option value="Saúde">Saúde</option>
+                    <option value="Educação">Educação</option>
+                    <option value="Lazer">Lazer</option>
+                    <option value="Outros">Outros</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="expenseStatus">Status:</label>
+                <select id="expenseStatus" required>
+                    <option value="paid">Pago</option>
+                    <option value="pending">Pendente</option>
+                    <option value="overdue">Atrasado</option>
+                </select>
+            </div>
+            <button class="add-btn" onclick="addExpense()">Adicionar Despesa</button>
+        </div>
+    </div>
+    
+    <!-- Modal para alteração de senha -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <h2>Alterar Senha</h2>
+            <p>Digite sua nova senha:</p>
+            <input type="password" id="newPassword" placeholder="Nova senha" required>
+            <input type="password" id="confirmPassword" placeholder="Confirmar nova senha" required>
+            <div class="modal-buttons">
+                <button class="cancel" onclick="closeModal()">Cancelar</button>
+                <button class="confirm" onclick="changePassword()">Confirmar</button>
+            </div>
+        </div>
+    </div>
 
-$nomention
-$title[👋・Recepção: Bem-Vindo]
-$color[FFA07A]
-$thumbnail[$authorAvatar]
-$description[Bem-vindo, <@$authorID>! Aqui você poderá ver atualizações, avisos, enquetes sobre o **Servidor** e muito mais!
-
-**📢 » Avisos:**
-🔗: https://discord.com/channels/ID DO CANAL/ID DO CANAL
-
-**📝 » Regras:**
-🔗: https://discord.com/channels/ID DO CANAL/ID DO CANAL
-
-**👑 » Diga Oi:**
-🔗: https://discord.com/channels/ID DO CANAL/ID DO CANAL
-]
-
-$footer[ √.©Todos os direitos reservados]
-$image[https://cdn.discordapp.com/attachments/1262050932875857952/1274697317013786624/4C2C.gif?ex=66c331e3&is=66c1e063&hm=08121f3a9510adc3dac9e5b4f4908c86fd2534a8509382b7ce327f865fa077fb&]
+    <script>
+        // Dados de usuários válidos e suas despesas
+        const usersData = {
+            'jmpaivateles@gmail.com': {
+                password: 'joselia23',
+                expenses: [],
+                budget: 0
+            },
+            'carlosalexandredepaivacaldeira@gmail.com': {
+                password: 'carlos18',
+                expenses: [],
+                budget: 0
+            }
+        };
+        
+        // Elementos do DOM
+        const loginContainer = document.getElementById('loginContainer');
+        const appContainer = document.getElementById('appContainer');
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const userEmail = document.getElementById('userEmail');
+        const userInfo = document.getElementById('userInfo');
+        const passwordModal = document.getElementById('passwordModal');
+        const expensesTableBody = document.getElementById('expensesTableBody');
+        const monthlyBudgetInput = document.getElementById('monthlyBudget');
+        
+        // Verificar se há usuário logado ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            
+            if (loggedInUser) {
+                loginContainer.style.display = 'none';
+                appContainer.style.display = 'block';
+                userEmail.textContent = loggedInUser;
+                userInfo.style.display = 'flex';
+                
+                // Carregar dados do usuário
+                loadUserData();
+            } else {
+                loginContainer.style.display = 'block';
+                appContainer.style.display = 'none';
+                userInfo.style.display = 'none';
+            }
+            
+            // Configurar data padrão para hoje
+            document.getElementById('expenseDate').valueAsDate = new Date();
+        });
+        
+        // Processar formulário de login
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (usersData[email] && usersData[email].password === password) {
+                // Login bem-sucedido
+                localStorage.setItem('loggedInUser', email);
+                loginContainer.style.display = 'none';
+                appContainer.style.display = 'block';
+                userEmail.textContent = email;
+                userInfo.style.display = 'flex';
+                errorMessage.style.display = 'none';
+                
+                // Carregar dados do usuário
+                loadUserData();
+            } else {
+                // Login falhou
+                errorMessage.style.display = 'block';
+            }
+        });
+        
+        // Função para carregar dados do usuário
+        function loadUserData() {
+            const userEmail = localStorage.getItem('loggedInUser');
+            if (!userEmail || !usersData[userEmail]) return;
+            
+            const user = usersData[userEmail];
+            const expenses = user.expenses;
+            
+            // Limpar tabela
+            expensesTableBody.innerHTML = '';
+            
+            let fixedTotal = 0;
+            let variableTotal = 0;
+            let totalSpent = 0;
+            
+            // Ordenar despesas por data (mais recente primeiro)
+            expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Preencher tabela com despesas
+            expenses.forEach((expense, index) => {
+                const row = document.createElement('tr');
+                row.classList.add(`status-${expense.status}`);
+                
+                // Formatar data para exibição (dd/mm/aaaa)
+                const dateObj = new Date(expense.date);
+                const formattedDate = dateObj.toLocaleDateString('pt-BR');
+                
+                // Atualizar totais
+                const value = parseFloat(expense.value);
+                totalSpent += value;
+                
+                if (expense.category === 'Despesas fixas') {
+                    fixedTotal += value;
+                } else {
+                    variableTotal += value;
+                }
+                
+                row.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td>
+                        <select class="status-select" onchange="updateStatus(this, ${index})">
+                            <option value="paid" ${expense.status === 'paid' ? 'selected' : ''}>Pago</option>
+                            <option value="pending" ${expense.status === 'pending' ? 'selected' : ''}>Pendente</option>
+                            <option value="overdue" ${expense.status === 'overdue' ? 'selected' : ''}>Atrasado</option>
+                        </select>
+                    </td>
+                    <td>${expense.description}</td>
+                    <td>R$ ${value.toFixed(2).replace('.', ',')}</td>
+                    <td>${expense.category}</td>
+                    <td><button class="delete-btn" onclick="deleteExpense(${index})">Excluir</button></td>
+                `;
+                
+                expensesTableBody.appendChild(row);
+            });
+            
+            // Atualizar totais no dashboard
+            updateTotals(fixedTotal, variableTotal);
+            
+            // Atualizar orçamento
+            updateBudgetDisplay(user.budget, totalSpent);
+        }
+        
+        // Função para atualizar totais no dashboard
+        function updateTotals(fixedTotal, variableTotal) {
+            document.getElementById('fixedExpenses').textContent = `R$ ${fixedTotal.toFixed(2).replace('.', ',')}`;
+            document.getElementById('variableExpenses').textContent = `R$ ${variableTotal.toFixed(2).replace('.', ',')}`;
+            document.getElementById('totalExpenses').textContent = `R$ ${(fixedTotal + variableTotal).toFixed(2).replace('.', ',')}`;
+        }
+        
+        // Função para atualizar a exibição do orçamento
+        function updateBudgetDisplay(budget, spent) {
+            const remaining = budget - spent;
+            const remainingElement = document.getElementById('remainingAmount');
+            
+            document.getElementById('budgetAmount').textContent = `R$ ${budget.toFixed(2).replace('.', ',')}`;
+            document.getElementById('spentAmount').textContent = `R$ ${spent.toFixed(2).replace('.', ',')}`;
+            document.getElementById('remainingAmount').textContent = `R$ ${Math.abs(remaining).toFixed(2).replace('.', ',')}`;
+            
+            // Alterar cor conforme o saldo
+            if (remaining >= 0) {
+                remainingElement.className = 'positive';
+            } else {
+                remainingElement.className = 'negative';
+                remainingElement.textContent = `-R$ ${Math.abs(remaining).toFixed(2).replace('.', ',')}`;
+            }
+        }
+        
+        // Função para definir o orçamento mensal
+        function setBudget() {
+            const userEmail = localStorage.getItem('loggedInUser');
+            if (!userEmail) return;
+            
+            const budgetValue = parseFloat(monthlyBudgetInput.value);
+            if (isNaN(budgetValue)) return;
+            
+            usersData[userEmail].budget = budgetValue;
+            
+            // Calcular total gasto
+            const totalSpent = usersData[userEmail].expenses.reduce((sum, expense) => sum + parseFloat(expense.value), 0);
+            
+            // Atualizar exibição
+            updateBudgetDisplay(budgetValue, totalSpent);
+            monthlyBudgetInput.value = '';
+        }
+        
+        // Função para adicionar nova despesa
+        function addExpense() {
+            const userEmail = localStorage.getItem('loggedInUser');
+            if (!userEmail) return;
+            
+            const date = document.getElementById('expenseDate').value;
+            const description = document.getElementById('expenseDescription').value;
+            const value = document.getElementById('expenseValue').value;
+            const category = document.getElementById('expenseCategory').value;
+            const status = document.getElementById('expenseStatus').value;
+            
+            // Validar campos
+            if (!date || !description || !value || !category || !status) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+            
+            // Adicionar despesa ao usuário
+            usersData[userEmail].expenses.push({
+                date,
+                description,
+                value: parseFloat(value),
+                category,
+                status
+            });
+            
+            // Limpar formulário
+            document.getElementById('expenseDescription').value = '';
+            document.getElementById('expenseValue').value = '';
+            
+            // Recarregar dados
+            loadUserData();
+        }
+        
+        // Função para atualizar status de uma despesa
+        function updateStatus(selectElement, index) {
+            const userEmail = localStorage.getItem('loggedInUser');
+            if (!userEmail) return;
+            
+            const newStatus = selectElement.value;
+            usersData[userEmail].expenses[index].status = newStatus;
+            
+            // Atualizar classe da linha
+            const row = selectElement.closest('tr');
+            row.className = `status-${newStatus}`;
+            
+            // Recalcular totais
+            recalculateTotals();
+        }
+        
+        // Função para excluir despesa
+        function deleteExpense(index) {
+            if (!confirm('Tem certeza que deseja excluir esta despesa?')) return;
+            
+            const userEmail = localStorage.getItem('loggedInUser');
+            if (!userEmail) return;
+            
+            usersData[userEmail].expenses.splice(index, 1);
+            loadUserData();
+        }
+        
+        // Função para recalcular totais
+        function recalculateTotals() {
+            const userEmail = localStorage.getItem('loggedInUser');
+            if (!userEmail) return;
+            
+            const user = usersData[userEmail];
+            const expenses = user.expenses;
+            let fixedTotal = 0;
+            let variableTotal = 0;
+            let totalSpent = 0;
+            
+            expenses.forEach(expense => {
+                const value = parseFloat(expense.value);
+                totalSpent += value;
+                
+                if (expense.category === 'Despesas fixas') {
+                    fixedTotal += value;
+                } else {
+                    variableTotal += value;
+                }
+            });
+            
+            updateTotals(fixedTotal, variableTotal);
+            updateBudgetDisplay(user.budget, totalSpent);
+        }
+        
+        // Função de logout
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            loginContainer.style.display = 'block';
+            appContainer.style.display = 'none';
+            userInfo.style.display = 'none';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            errorMessage.style.display = 'none';
+            closeModal();
+        }
+        
+        // Funções para alteração de senha
+        function openChangePasswordModal() {
+            passwordModal.style.display = 'block';
+        }
+        
+        function closeModal() {
+            passwordModal.style.display = 'none';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+        
+        function changePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const currentUser = localStorage.getItem('loggedInUser');
+            
+            if (newPassword !== confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('A senha deve ter pelo menos 6 caracteres!');
+                return;
+            }
+            
+            // Atualiza a senha no objeto de usuários
+            usersData[currentUser].password = newPassword;
+            
+            alert('Senha alterada com sucesso!');
+            closeModal();
+        }
+        
+        // Permitir enviar formulário com Enter
+        document.getElementById('expenseDescription').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addExpense();
+            }
+        });
+        
+        document.getElementById('expenseValue').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addExpense();
+            }
+        });
+        
+        monthlyBudgetInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                setBudget();
+            }
+        });
+    </script>
+</body>
+</html>
