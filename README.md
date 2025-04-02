@@ -1,5 +1,5 @@
 
-# BDScript Discord for Commands
+# Calculadora e Organizador de gastos
 
 Bem-vindo ao meu repositório de comandos em BDScript para BOT's do Discord! Aqui, você encontrará uma coleção de comandos personalizados, todos criados por mim, **Kaka**. Se você está procurando por edições e criação de comandos simples e eficientes para melhorar a interação em seu servidor do Discord, você veio ao lugar certo.
 
